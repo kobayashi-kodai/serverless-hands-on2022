@@ -1,0 +1,46 @@
+# YOUR NAME: 参加者のID
+service: hands-on-<YOUR NAME>
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  region: ap-northeast-1
+  iam:
+    # Lambdaのロールを設定
+    # role: arn:aws:iam::xxxxxxxxxx:role/xxxxxxxxxx
+    role: <ROLE>
+
+functions:
+  hello:
+    handler: hello.handler
+
+  redirect:
+    handler: redirect.handler
+    # 応用問題はこちらを利用
+    # handler: redirect2.handler
+    events:
+      - http:
+          path: redirect
+          method: get
+          integration: lambda
+
+# 応用問題
+resources:
+  Resources:
+    DynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        # YOUR TABLE NAME: テーブル名を設定
+        TableName: <YOUR TABLE NAME>
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
